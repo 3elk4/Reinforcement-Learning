@@ -1,2 +1,2 @@
-# Q-Learning-Maze
-Maze and q-learning
+# Reinforcement Learning
+MDP model, QLearning, SARSA.
