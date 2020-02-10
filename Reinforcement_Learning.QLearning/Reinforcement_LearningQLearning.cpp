@@ -9,7 +9,7 @@ Reinforcement_LearningQLearning::Reinforcement_LearningQLearning(QWidget *parent
 
 	//environment
 	//walls, paths, food and head
-	init_environment("./env/maze3.txt");
+	init_environment("./env/maze6.txt");
 
 	//mdpmodel set
 	auto states = this->environment.init_all_states(environment.get_environment_elements(env_type::path));
@@ -95,13 +95,12 @@ void Reinforcement_LearningQLearning::init_environment(const string &path) {
 void Reinforcement_LearningQLearning::keyPressEvent(QKeyEvent* event) {
 	switch (event->key()) {
 	case Qt::Key_Q: {
-		double result = play_and_train(10, this->agent);
+		double result = play_and_train_qlearning(2000);
 		cout << "Your result: " << result << endl;
-		//print_table();
 		break;
 	}
 	case Qt::Key_S: {
-		double result = play_and_train(10, this->agentSARSA);
+		double result = play_and_train_SARSA(2000);
 		cout << "Your result: " << result << endl;
 		break;
 	}
@@ -128,7 +127,6 @@ void Reinforcement_LearningQLearning::paintEvent(QPaintEvent * event)
 	paint.drawRect(this->headAndFood.first.get_X(), this->headAndFood.first.get_Y(), win_size.block_width, win_size.block_height);
 }
 
-
 void Reinforcement_LearningQLearning::print_table(QLearningAgent<pair<Point, Point>, action> &agent) {
 
 	//TODO: odfiltrowaæ do obecnej planszy
@@ -140,11 +138,14 @@ void Reinforcement_LearningQLearning::print_table(QLearningAgent<pair<Point, Poi
 
 	printf("|%18s|%8s|%8s|%8s|%8s|\n", "STATE", "up", "right", "down", "left");
 	for (auto &kv : filtred) {
-		cout << "|" << kv.first.first << ", " << kv.first.second << "|" <<
-			kv.second.at(action::up) << "|" <<
-			kv.second.at(action::right) << "|" <<
-			kv.second.at(action::down) << "|" <<
-			kv.second.at(action::left) << "|" << endl;
+		cout << "|" << kv.first.first << ", " << kv.first.second << "|";		
+		list<action> actions = { action::up, action::right, action::down, action::left };
+		for (auto &a : actions) {
+			auto s = to_string(kv.second.at(a));
+			s.resize(8, ' ');
+			cout << s << "|";
+		}
+		cout << endl;
 
 		/*printf("|%8s, %8s|", kv.first.first, kv.first.second);
 		printf("|%10f|", kv.second.at(action::up));
@@ -154,7 +155,7 @@ void Reinforcement_LearningQLearning::print_table(QLearningAgent<pair<Point, Poi
 	}
 }
 
-double Reinforcement_LearningQLearning::play_and_train(const int & episodes, QLearningAgent<pair<Point, Point>, action> &agent)
+double Reinforcement_LearningQLearning::play_and_train_qlearning(const int & episodes)
 {
 	/*
 		This function should
@@ -169,33 +170,73 @@ double Reinforcement_LearningQLearning::play_and_train(const int & episodes, QLe
 
 	for (int i = 0; i < episodes; ++i) {
 		this->headAndFood = this->environment.reset();
+		show_episode(i, this->episodes_to_show);
 		while (true) {
 			//get agent to pick action given state s.
-			a = agent.get_action(this->headAndFood);
-			if (!a.has_value()) {
-				this->headAndFood = this->environment.reset();
-				this_thread::sleep_for(0.5s);
-				repaint();
-				continue;
-			}
+			a = this->agent.get_action(this->headAndFood);
+			if (!a.has_value()) break;
 			sd = this->environment.step(a.value(), this->headAndFood);
 
 			//train(update) agent for state s
-			agent.update(this->headAndFood, a.value(), sd.reward, sd.next_state);
+			this->agent.update(this->headAndFood, a.value(), sd.reward, sd.next_state);
 			this->headAndFood = sd.next_state;
+			show_episode(i, this->episodes_to_show);
 			total_reward += sd.reward;
-			this_thread::sleep_for(0.5s);
-			repaint();
 			if (sd.is_done) break;
 		}
-		cout << "EPISODE: " << i+1 << endl;
-		cout << "SCORE: " << total_reward << endl;
-		print_table(agent);
+		cout << "EPISODE: " << i+1 << ", SCORE: " << total_reward << endl;
+		
 	}
+	this->headAndFood = this->environment.reset();
+	print_table(this->agent);
 	return total_reward;
 }
 
+double Reinforcement_LearningQLearning::play_and_train_SARSA(const int & episodes)
+{
+	/*
+		This function should
+		- run a full game, actions given by agent's e-greedy policy
+		- train agent using agent.update(...) whenever it is possible
+		- return total reward
+	*/
 
+	double total_reward = 0.0;
+	optional<action> a;
+	step_details<pair<Point, Point>> sd;
+
+	for (int i = 0; i < episodes; ++i) {
+		this->headAndFood = this->environment.reset();
+		show_episode(i, this->episodes_to_show);
+		this->agentSARSA.reset_next_action();
+		while (true) {
+			//get agent to pick action given state s.
+			a = this->agentSARSA.get_next_action(this->headAndFood);
+			if (!a.has_value()) break;
+			sd = this->environment.step(a.value(), this->headAndFood);
+
+			//train(update) agent for state s
+			this->agentSARSA.update(this->headAndFood, a.value(), sd.reward, sd.next_state);
+			this->headAndFood = sd.next_state;
+			show_episode(i, this->episodes_to_show);
+			total_reward += sd.reward;
+			if (sd.is_done) break;
+		}
+		cout << "EPISODE: " << i + 1 << ", SCORE: " << total_reward << endl;
+	}
+	this->headAndFood = this->environment.reset();
+	print_table(this->agentSARSA);
+	return total_reward;
+}
+
+void Reinforcement_LearningQLearning::show_episode(int current_episode, list<int> episodes) {
+	for (auto &e : episodes) {
+		if (current_episode == e) {
+			repaint();
+			this_thread::sleep_for(0.25s);
+		}
+	}
+}
 
 void Reinforcement_LearningQLearning::loop() {
 

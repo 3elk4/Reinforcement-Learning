@@ -16,6 +16,7 @@
 //#include <windows.h>
 #include <thread>
 #include <utility>
+#include <string>
 
 using namespace std;
 
@@ -29,13 +30,17 @@ public:
 
 	void paintEvent(QPaintEvent* event);
 	void keyPressEvent(QKeyEvent* event);
-	double play_and_train(const int &episodes, QLearningAgent<pair<Point, Point>, action> &agent);
+	double play_and_train_qlearning(const int &episodes);
+	double play_and_train_SARSA(const int &episodes);
 	void init_environment(const string &path);
 	void print_table(QLearningAgent<pair<Point, Point>, action> &agent);
+	void show_episode(int current_episode, list<int> episodes);
 
 private:
 	Ui::Reinforcement_LearningQLearningClass ui;
 	QTimer *timer = nullptr;
+
+	list<int> episodes_to_show = {0, 300, 500, 1000, 1500, 1900};
 
 	Environment environment;
 	QLearningAgent<pair<Point, Point>, action> agent;

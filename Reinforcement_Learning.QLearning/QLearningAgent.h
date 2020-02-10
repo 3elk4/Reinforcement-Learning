@@ -14,6 +14,8 @@ class QLearningAgent
 {
 public:
 	QLearningAgent() {
+
+		//TODO: alpha i epsilon na 0 + klawisz wy³¹czajacy naukê + okienko do ustawiania parametrów
 		this->alpha = 0.5; // szybkoœæ z jak¹ siê uczy
 		this->epsilon = 0.1; // do tego czy ma wybieraæ losowo czy najlepsz¹ akcjê
 		this->gamma = 0.99; //ile ma siê uczyæ z przesz³oœci
@@ -34,7 +36,7 @@ public:
 	void init_qvalues(const list<S> &states, const list<A> &actions) {
 		for (auto &s : states) {
 			for (auto &a : actions) {
-				this->qtable[s][a] = 0.0;
+				this->qtable[s][a] = 1.0;
 			}
 		}
 	}
@@ -62,6 +64,11 @@ public:
 		return actions;
 	}
 
+	double get_max_value(const S &s) {
+		return max_element(this->qtable.at(s).begin(), this->qtable.at(s).end(),
+			[](const pair<A, double>& p1, const pair<A, double>& p2) {return p1.second < p2.second; })->second;
+	}
+
 	virtual double get_value(const S &s) {
 		/*
 		Compute your agent's estimate of V(s) using current q-values
@@ -73,8 +80,7 @@ public:
 		auto possible_actions = get_legal_actions(s);
 		if (possible_actions.empty()) return -1.0;
 
-		return max_element(this->qtable.at(s).begin(), this->qtable.at(s).end(),
-			[](const pair<A, double>& p1, const pair<A, double>& p2) {return p1.second < p2.second; })->second;
+		return get_max_value(s);
 	}
 
 	void update(const S &s1, const A &a, const double &reward, const S&s2) {
@@ -94,8 +100,17 @@ public:
 		auto possible_actions = get_legal_actions(s);
 		if (possible_actions.empty()) return nullopt;
 
-		return max_element(this->qtable.at(s).begin(), this->qtable.at(s).end(),
-			[](const pair<A, double>& p1, const pair<A, double>& p2) {return p1.second < p2.second; })->first;
+		double max_value = get_max_value(s);
+		list<A> rand_action;
+		for (auto &a : possible_actions) {
+			if (this->qtable.at(s).at(a) == max_value) {
+				rand_action.push_back(a);
+			}
+		}
+
+		auto it = rand_action.begin();
+		advance(it, rand() % rand_action.size());
+		return *it;
 	}
 
 	
@@ -108,19 +123,18 @@ public:
 		To pick True or False with a given probablity, generate uniform number in[0, 1]
 		and compare it with your probability*/
 
-		// TODO: w poprzednim by³a jeszcze kwestia flagi - czy te¿ uwzgledniaæ?
 		auto possible_actions = get_legal_actions(s);
 		if (possible_actions.empty()) return nullopt;
 
-		bool flag = true;
+		/*bool flag = true;
 		for (auto &a : possible_actions) {
 			if (this->qtable.at(s).at(a) != 0.0) {
 				flag = false;
 				break;
 			}
-		}
+		}*/
 
-		if (((rand() % 1001) / 1000) <= this->epsilon || flag == true)
+		if (((rand() % 1001) / 1000.0) <= this->epsilon) //|| flag == true)
 		{
 			auto it = possible_actions.begin();
 			advance(it, rand() % possible_actions.size());
