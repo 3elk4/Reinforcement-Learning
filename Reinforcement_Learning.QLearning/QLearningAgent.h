@@ -14,10 +14,8 @@ class QLearningAgent
 {
 public:
 	QLearningAgent() {
-
-		//TODO: alpha i epsilon na 0 + klawisz wy³¹czajacy naukê + okienko do ustawiania parametrów
-		this->alpha = 0.5; // szybkoœæ z jak¹ siê uczy
-		this->epsilon = 0.1; // do tego czy ma wybieraæ losowo czy najlepsz¹ akcjê
+		this->alpha = 0.75; // szybkoœæ z jak¹ siê uczy
+		this->epsilon = 0.5; // do tego czy ma wybieraæ losowo czy najlepsz¹ akcjê
 		this->gamma = 0.99; //ile ma siê uczyæ z przesz³oœci
 	}
 
@@ -28,6 +26,11 @@ public:
 	}
 
 	~QLearningAgent() {}
+
+	void reset_parameters() {
+		this->alpha = 0.0;
+		this->epsilon = 0.0;
+	}
 
 	map<S, map<A, double>> get_qtable() {
 		return this->qtable;

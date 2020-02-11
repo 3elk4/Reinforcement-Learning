@@ -66,7 +66,7 @@ Point Environment::get_next_Point(Point start, action a, int x_step_len, int y_s
 void Environment::init_transition_probs_and_rewards(const list<pair<Point, Point>>& pair_list)
 {
 	double prob = 1.0;
-	double reward = 0.0;
+	double reward = -1.0;
 
 	this->obstacle = make_pair(Point(-win_size.block_width, -win_size.block_height), Point(0, 0));
 	vector<Point> obstacles = this->get_environment_elements(env_type::wall);
@@ -76,16 +76,16 @@ void Environment::init_transition_probs_and_rewards(const list<pair<Point, Point
 		for (int i = 0; i < 4; ++i) {
 			Point p = get_next_Point(p1.first, a[i], win_size.block_width, win_size.block_height);
 			pair<Point, Point> pair = make_pair(p, p1.second);
-			reward = 0.0;
+			reward = -1.0;
 
 			if (find(obstacles.begin(), obstacles.end(), p) != obstacles.end()) {
-				reward = -1.0;
+				reward = -100.0;
 				this->transition_probs[p1][a[i]][obstacle] = prob;
 				this->rewards[p1][a[i]][obstacle] = reward;
 			}
 			else if (find(pair_list.begin(), pair_list.end(), pair) != pair_list.end()) {
 				if (is_terminal(pair)) {
-					reward = 1.0;
+					reward = 0.0;
 				}
 				this->transition_probs[p1][a[i]][pair] = prob;
 				this->rewards[p1][a[i]][pair] = reward;
