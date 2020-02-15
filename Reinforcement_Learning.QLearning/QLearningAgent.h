@@ -32,6 +32,12 @@ public:
 		this->epsilon = 0.0;
 	}
 
+	void set_parameters(double alpha, double epsilon, double gamma) {
+		this->alpha = alpha;
+		this->epsilon = epsilon;
+		this->gamma = gamma;
+	}
+
 	map<S, map<A, double>> get_qtable() {
 		return this->qtable;
 	}
@@ -50,7 +56,8 @@ public:
 		}
 	}
 
-	double get_qvalue(const S&s, const A& a) {
+	//TODO: feature extractor - zwraca wektor lub mapa(!!) 
+	double get_qvalue(const S&s, const A& a) { //extract features 
 		return this->qtable.at(s).at(a);
 	}
 	void set_qvalue(const S&s, const A&a, const double &value) {
@@ -67,7 +74,7 @@ public:
 		return actions;
 	}
 
-	double get_max_value(const S &s) {
+	double get_max_value(const S &s) { // z 4 get qvalue
 		return max_element(this->qtable.at(s).begin(), this->qtable.at(s).end(),
 			[](const pair<A, double>& p1, const pair<A, double>& p2) {return p1.second < p2.second; })->second;
 	}
@@ -106,7 +113,7 @@ public:
 		double max_value = get_max_value(s);
 		list<A> rand_action;
 		for (auto &a : possible_actions) {
-			if (this->qtable.at(s).at(a) == max_value) {
+			if (get_qvalue(s, a) == max_value) {
 				rand_action.push_back(a);
 			}
 		}

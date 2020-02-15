@@ -31,6 +31,10 @@ public:
 		return this->gamma;
 	}
 
+	int get_episodes_number() {
+		return this->episodes_number;
+	}
+
 private:
 	Ui::ParameterDialog ui;
 
@@ -38,6 +42,7 @@ private:
 	double alpha = 0.5;
 	double epsilon = 0.90;
 	double gamma = 0.5;
+	int episodes_number = 0;
 
 	void on_ok_clicked();
 	void on_cancel_clicked();

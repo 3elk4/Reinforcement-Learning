@@ -66,7 +66,7 @@ Point Environment::get_next_Point(Point start, action a, int x_step_len, int y_s
 void Environment::init_transition_probs_and_rewards(const list<pair<Point, Point>>& pair_list)
 {
 	double prob = 1.0;
-	double reward = -1.0;
+	double reward = 0.0;
 
 	this->obstacle = make_pair(Point(-win_size.block_width, -win_size.block_height), Point(0, 0));
 	vector<Point> obstacles = this->get_environment_elements(env_type::wall);
@@ -76,16 +76,17 @@ void Environment::init_transition_probs_and_rewards(const list<pair<Point, Point
 		for (int i = 0; i < 4; ++i) {
 			Point p = get_next_Point(p1.first, a[i], win_size.block_width, win_size.block_height);
 			pair<Point, Point> pair = make_pair(p, p1.second);
-			reward = -1.0;
+			//reward = -1.0;
 
 			if (find(obstacles.begin(), obstacles.end(), p) != obstacles.end()) {
-				reward = -100.0;
+				reward = env_reward.wall;
 				this->transition_probs[p1][a[i]][obstacle] = prob;
 				this->rewards[p1][a[i]][obstacle] = reward;
 			}
 			else if (find(pair_list.begin(), pair_list.end(), pair) != pair_list.end()) {
+				reward = env_reward.path;
 				if (is_terminal(pair)) {
-					reward = 0.0;
+					reward = env_reward.food;
 				}
 				this->transition_probs[p1][a[i]][pair] = prob;
 				this->rewards[p1][a[i]][pair] = reward;
@@ -132,6 +133,30 @@ bool Environment::is_terminal(const pair<Point, Point>& p)
 
 pair<Point, Point> Environment::reset()
 {
-	current_state = initial_state;
+	if (is_wall(current_state)) {
+		current_state = initial_state;
+	}
+	else if (is_terminal(current_state)) {
+		change_reward_position();
+		initial_state = current_state;
+	}
 	return current_state;
+}
+
+void Environment::change_reward_position()
+{
+	auto empty_states = this->get_environment_elements(env_type::path);
+	auto del_it = std::find(empty_states.begin(), empty_states.end(), this->current_state.second);
+	if (del_it != empty_states.end()) empty_states.erase(del_it);
+	auto it = empty_states.begin();
+	advance(it, rand() % empty_states.size());
+	this->current_state.second = *it;
+	
+}
+
+void Environment::clear_environment()
+{
+	this->environment.clear();
+	this->transition_probs.clear();
+	this->rewards.clear();
 }

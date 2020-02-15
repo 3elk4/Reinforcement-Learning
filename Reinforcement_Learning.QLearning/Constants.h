@@ -12,12 +12,25 @@ using namespace std;
 		left
 	};
 
+	enum class rl_mode {
+		qlearning = 0,
+		sarsa,
+		approx
+	};
+
 	enum class env_type {
 		wall = 0,
 		path,
 		food, 
 		head
 	};
+
+	struct env_type_reward {
+		double wall = -100.0;
+		double path = -1.0;
+		double food = 0.0;
+	};
+	static env_type_reward env_reward;
 
 	struct env_sign {
 		char wall = '*';
@@ -43,5 +56,17 @@ using namespace std;
 		}
 	};
 	static window_size win_size;
+
+	enum class program_state {
+		none = 0,
+		train_and_play,
+		qlearning,
+		sarsa,
+		approx,
+		init_env,
+		mode_choosing,
+		setting_parameters,
+		episode
+	};
 
 #endif

@@ -32,6 +32,9 @@ public:
 	bool is_terminal(const pair<Point, Point> &p);
 	//double get_reward(const pair<Point, Point> &p1, const action &a, const pair<Point, Point> &p2) override;
 	pair<Point, Point> reset();
+	void change_reward_position();
+
+	void clear_environment();
 
 private:
 	pair<Point, Point> obstacle;

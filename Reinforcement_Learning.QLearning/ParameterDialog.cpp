@@ -23,6 +23,7 @@ void ParameterDialog::on_ok_clicked() {
 	this->episodes = ui.episodesBox->value();
 	this->alpha = ui.alphaBox->value();
 	this->gamma = ui.gammaBox->value();
-	this->epsilon = ui.gammaBox->value();
+	this->epsilon = ui.epsilonBox->value();
+	this->episodes_number = ui.episodeNumber->value();
 	this->close();
 }

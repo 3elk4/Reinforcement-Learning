@@ -259,8 +259,11 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
-/Reinforcement_Learning.MDP/Reinforcement_Learning.MDP.vcxproj
-/Reinforcement_Learning.MDP/Reinforcement_Learning.MDP.vcxproj.filters
-/Reinforcement_Learning.QLearning/Reinforcement_Learning.QLearning.vcxproj
-/Reinforcement_Learning.QLearning/Reinforcement_Learning.QLearning.vcxproj.filters
 /Reinforcement_Learning.sln
+/Reinforcement_Learning.QLearning/ProgramStates.h
+/Reinforcement_Learning.Algorithms/Reinforcement_Learning.Algorithms.vcxproj
+/Reinforcement_Learning.Algorithms/Reinforcement_Learning.Algorithms.vcxproj.filters
+/Reinforcement_Learning.Algorithms/Reinforcement_LearningAlgorithms.cpp
+/Reinforcement_Learning.Algorithms/Reinforcement_LearningAlgorithms.h
+/Reinforcement_Learning.Algorithms/Reinforcement_LearningAlgorithms.qrc
+/Reinforcement_Learning.Algorithms/Reinforcement_LearningAlgorithms.ui
