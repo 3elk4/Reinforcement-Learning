@@ -44,6 +44,19 @@ void Reinforcement_LearningMDP::paintEvent(QPaintEvent * event)
 		paint.drawRect(ptk.get_X(), ptk.get_Y(), squareSize.get_X(), squareSize.get_Y());
 	}
 
+	for (Point ptk : frame) {
+		paint.drawRect(ptk.get_X() + win_size.width + win_size.block_width, ptk.get_Y(), squareSize.get_X(), squareSize.get_Y());
+	}
+
+	auto states = this->mdp.get_all_states();
+	for (auto &p : states) {
+		if (p.second == this->snakeAndFood.second) {
+			auto a = this->policy.at(p);
+			paint.drawText(p.first.get_X() + win_size.width + win_size.block_width, p.first.get_Y(),
+				win_size.block_width, win_size.block_height, Qt::AlignCenter, this->actions.at(a).c_str());
+		}
+	}
+		
 	//food
 	paint.setBrush(Qt::green);
 	paint.drawRect(snakeAndFood.second.get_X(), snakeAndFood.second.get_Y(), squareSize.get_X(), squareSize.get_Y());
@@ -79,7 +92,6 @@ void Reinforcement_LearningMDP::initEnvironment()
 
 Point Reinforcement_LearningMDP::getRandomFoodPos()
 {
-	//TODO: copy or not?
 	auto temp_list = this->environment;
 	temp_list.remove(this->snakeAndFood.first);
 	temp_list.remove(this->snakeAndFood.first);

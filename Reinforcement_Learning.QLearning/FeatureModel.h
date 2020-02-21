@@ -7,8 +7,8 @@
 
 using namespace std;
 
-template<class S, class A>
-class FeatureModel
+/*template<class S, class A>*/
+/*class FeatureModel
 {
 public:
 	FeatureModel() {}
@@ -23,11 +23,26 @@ public:
 	}
 protected:
 	list<Feature<S, A>> features;
-};
+};*/
 
-class SimpleFeatureModel : public FeatureModel<pair<Point, Point>, action> {
+class SimpleFeatureModel{
 public:
-	SimpleFeatureModel(const list<Feature<pair<Point, Point>, action>>& f) : FeatureModel(f) {}
-	~SimpleFeatureModel() {}
-	map<feature_names, double> get_feature_values(const pair<Point, Point>&s, const action&a) override;
+	SimpleFeatureModel() { this->features = { new Food_Feature(), new Is_Wall_Feature() }; } /*, new Is_Food_Feature(), new Is_Wall_Feature()*/
+	SimpleFeatureModel(const list<Feature*> &f) { this->features = f; }
+	~SimpleFeatureModel() {
+		/*for (auto &f : this->features) {
+			delete f;
+		}*/
+	}
+	map<feature_names, double> get_feature_values(const pair<Point, Point>&s, const action&a);
+
+	list<Feature*> get_features() {
+		return this->features;
+	}
+
+private:
+	list<Feature*> features;
+
+	//Food_Feature ff;
+	//Min_Wall_Feature mwf;
 };

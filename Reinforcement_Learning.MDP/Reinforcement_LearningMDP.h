@@ -41,6 +41,11 @@ private:
 	Point frameSize;
 	Point squareSize;
 
+	map<action, string> actions = { {action::up, "u"},
+									{action::down, "d" },
+									{action::left, "l" },
+									{action::right, "r" } };
+
 private slots:
 	void loop();
 };

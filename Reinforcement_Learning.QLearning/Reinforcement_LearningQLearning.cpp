@@ -11,16 +11,21 @@ Reinforcement_LearningQLearning::Reinforcement_LearningQLearning(QWidget *parent
 	ui.statusBar->showMessage(p_states.at(program_state::none));
 
 	//APROX QLEARNING
-	list<Feature<pair<Point, Point>, action>> features = { Food_Feature(),
-														//Min_Wall_Feature(),
-														One_Wall_Feature(feature_names::left_wall_feature),
-														One_Wall_Feature(feature_names::right_wall_feature), 
-														One_Wall_Feature(feature_names::up_wall_feature),
-														One_Wall_Feature(feature_names::down_wall_feature)
-														};
-	auto model = SimpleFeatureModel(features);
+/*	list<Feature*> features = { &Food_Feature(),
+							&Is_Food_Feature(),
+							&Is_Food_Up_Feature(),
+							&Is_Food_Down_Feature(),
+							&Is_Food_Left_Feature(),
+							&Is_Food_Right_Feature(),
+							&Min_Wall_Feature()
+							//One_Wall_Feature(feature_names::left_wall_feature),
+							//One_Wall_Feature(feature_names::right_wall_feature), 
+							//One_Wall_Feature(feature_names::up_wall_feature),
+							//One_Wall_Feature(feature_names::down_wall_feature)
+							};*/
+	auto model = SimpleFeatureModel();
 	list<action> actions = { action::up, action::down, action::left, action::right };
-	this->approxAgent = AproxQLearning<pair<Point, Point>, action>(model, actions);
+	this->approxAgent = AproxQLearning(model, actions);
 	this->approxAgent.init_weight_table();
 	
 	timer = new QTimer(this);
@@ -63,8 +68,8 @@ void Reinforcement_LearningQLearning::init_environment(const string &path) {
 			h = stoi(line);
 		}
 
-		win_size.set_height(h * win_size.block_height);
-		win_size.set_width(w * win_size.block_width);
+		window_size::get_instance().set_height(h * window_size::get_instance().get_block_height());
+		window_size::get_instance().set_width(w * window_size::get_instance().get_block_width());
 	}
 
 	Point temp;
@@ -81,10 +86,10 @@ void Reinforcement_LearningQLearning::init_environment(const string &path) {
 			else if (c == e_sign.path) {
 				this->environment.set_environemnt_element(temp, env_type::path);
 				//tutaj next states
-				/*this->environment.set_next_state(temp, action::up, temp + Point(x, y - win_size.block_height));
-				this->environment.set_next_state(temp, action::down, temp + Point(x, y + win_size.block_height));
-				this->environment.set_next_state(temp, action::left, temp + Point(x - win_size.block_width, y));
-				this->environment.set_next_state(temp, action::right, temp + Point(x + win_size.block_width, y));*/
+				/*this->environment.set_next_state(temp, action::up, temp + Point(x, y - window_size::get_instance().get_block_height()));
+				this->environment.set_next_state(temp, action::down, temp + Point(x, y + window_size::get_instance().get_block_height()));
+				this->environment.set_next_state(temp, action::left, temp + Point(x - window_size::get_instance().get_block_width(), y));
+				this->environment.set_next_state(temp, action::right, temp + Point(x + window_size::get_instance().get_block_width(), y));*/
 			}
 			else if (c == e_sign.head) {
 				this->environment.set_environemnt_element(temp, env_type::path);
@@ -96,9 +101,9 @@ void Reinforcement_LearningQLearning::init_environment(const string &path) {
 				//this->environment.set_end_state(temp);
 				this->headAndFood.second = temp;
 			}
-			x += win_size.block_width;
+			x += window_size::get_instance().get_block_width();
 		}
-		y += win_size.block_height;
+		y += window_size::get_instance().get_block_height();
 	}
 	inFile.close();
 }
@@ -141,7 +146,6 @@ void Reinforcement_LearningQLearning::keyPressEvent(QKeyEvent* event) {
 	}
 } 
 
-
 void Reinforcement_LearningQLearning::paintEvent(QPaintEvent * event)
 {
 	QPainter paint(this);
@@ -149,14 +153,14 @@ void Reinforcement_LearningQLearning::paintEvent(QPaintEvent * event)
 	paint.setBrush(Qt::blue);
 	auto walls = this->environment.get_environment_elements(env_type::wall);
 	for_each(walls.begin(), walls.end(),
-		[&paint](Point w) {paint.drawRect(w.get_X(), w.get_Y(), win_size.block_width, win_size.block_height); });
+		[&paint](Point w) {paint.drawRect(w.get_X(), w.get_Y(), window_size::get_instance().get_block_width(), window_size::get_instance().get_block_height()); });
 
 	paint.setBrush(Qt::green);
 	auto food = this->environment.get_environment_elements(env_type::food);
-	paint.drawRect(this->headAndFood.second.get_X(), this->headAndFood.second.get_Y(), win_size.block_width, win_size.block_height);
+	paint.drawRect(this->headAndFood.second.get_X(), this->headAndFood.second.get_Y(), window_size::get_instance().get_block_width(), window_size::get_instance().get_block_height());
 
 	paint.setBrush(Qt::red);
-	paint.drawRect(this->headAndFood.first.get_X(), this->headAndFood.first.get_Y(), win_size.block_width, win_size.block_height);
+	paint.drawRect(this->headAndFood.first.get_X(), this->headAndFood.first.get_Y(), window_size::get_instance().get_block_width(), window_size::get_instance().get_block_height());
 
 	draw_best_actions(this->current_agent, paint);
 }
@@ -189,13 +193,26 @@ void Reinforcement_LearningQLearning::print_table(QLearningAgent<pair<Point, Poi
 	}
 }
 
+void Reinforcement_LearningQLearning::print_weight_table()
+{
+	map<feature_names, double> qwtable = approxAgent.get_weight_table();
+
+	printf("|%20s|\n", "FEATURES");
+	for (auto &kv : qwtable) {
+		auto f = features.at(kv.first);
+		f.resize(20, ' ');
+		cout << "|" << f << "|";
+		cout << kv.second << endl;
+	}	
+}
+
 void Reinforcement_LearningQLearning::draw_best_actions(QLearningAgent<pair<Point, Point>, action>& agent, QPainter &painter)
 {
 	painter.setBrush(Qt::blue);
-	int offset = win_size.width + win_size.block_width;
+	int offset = window_size::get_instance().get_width() + window_size::get_instance().get_block_width();
 	auto walls = this->environment.get_environment_elements(env_type::wall);
 	for_each(walls.begin(), walls.end(),
-		[&painter](Point w) {painter.drawRect(w.get_X() + win_size.width + win_size.block_width, w.get_Y(), win_size.block_width, win_size.block_height); });
+		[&painter](Point w) {painter.drawRect(w.get_X() + window_size::get_instance().get_width() + window_size::get_instance().get_block_width(), w.get_Y(), window_size::get_instance().get_block_width(), window_size::get_instance().get_block_height()); });
 
 	auto states = this->environment.get_all_states();
 	list<pair<Point, Point>> filtred;
@@ -210,7 +227,7 @@ void Reinforcement_LearningQLearning::draw_best_actions(QLearningAgent<pair<Poin
 				auto a = agent.get_best_action(f);
 				if (a.has_value()) {
 					auto s = this->actions.at(a.value());
-					painter.drawText(p.get_X() + offset, p.get_Y(), win_size.block_width, win_size.block_height, Qt::AlignCenter, s.c_str());
+					painter.drawText(p.get_X() + offset, p.get_Y(), window_size::get_instance().get_block_width(), window_size::get_instance().get_block_height(), Qt::AlignCenter, s.c_str());
 				}	
 			}
 		}

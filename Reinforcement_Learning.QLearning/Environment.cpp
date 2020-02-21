@@ -68,13 +68,13 @@ void Environment::init_transition_probs_and_rewards(const list<pair<Point, Point
 	double prob = 1.0;
 	double reward = 0.0;
 
-	this->obstacle = make_pair(Point(-win_size.block_width, -win_size.block_height), Point(0, 0));
+	this->obstacle = make_pair(Point(-window_size::get_instance().get_block_width(), -window_size::get_instance().get_block_height()), Point(0, 0));
 	vector<Point> obstacles = this->get_environment_elements(env_type::wall);
 	action a[] = { action::up, action::down, action::left, action::right };
 
 	for (auto &p1 : pair_list) {
 		for (int i = 0; i < 4; ++i) {
-			Point p = get_next_Point(p1.first, a[i], win_size.block_width, win_size.block_height);
+			Point p = get_next_Point(p1.first, a[i], window_size::get_instance().get_block_width(), window_size::get_instance().get_block_height());
 			pair<Point, Point> pair = make_pair(p, p1.second);
 			//reward = -1.0;
 

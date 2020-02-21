@@ -14,7 +14,6 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-//#include <windows.h>
 #include <thread>
 #include <utility>
 #include <string>
@@ -49,6 +48,7 @@ public:
 
 	void init_environment(const string &path);
 	void print_table(QLearningAgent<pair<Point, Point>, action> &agent);
+	void print_weight_table();
 	void show_episode(int current_episode, list<int> episodes);
 	void draw_best_actions(QLearningAgent<pair<Point, Point>, action> &agent, QPainter &painter);
 
@@ -66,13 +66,19 @@ private:
 	
 	QLearningAgent<pair<Point, Point>, action> agent;
 	SARSA agentSARSA;
-	AproxQLearning<pair<Point, Point>, action> approxAgent;
+	AproxQLearning approxAgent;
 
 	
 	map<action, string> actions = { {action::up, "u"}, 
 									{action::down, "d" },
 									{action::left, "l" },
 									{action::right, "r" } };
+
+	map<feature_names, string> features = { {feature_names::food_feature, "Food feature"},
+											{feature_names::min_wall_feature, "Min wall feature"},
+											{feature_names::is_food_feature, "Is food feature"},
+											{feature_names::is_wall_feature, "Is wall feature"}
+	};
 
 	map<program_state, QString> p_states = {
 		{program_state::none, "Waiting for action..."},

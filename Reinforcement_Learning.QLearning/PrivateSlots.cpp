@@ -118,7 +118,7 @@ void Reinforcement_LearningQLearning::on_startstopbutton_clicked()
 			this->timerapproxqlerning->stop();
 		}
 		else if (mode == rl_mode::approx) {
-			this->approxAgent.set_parameters(pardialog.get_alpha(), pardialog.get_gamma());
+			this->approxAgent.set_parameters(pardialog.get_alpha(), pardialog.get_gamma(), pardialog.get_epsilon());
 			double result = play_and_train_approxqlearning(pardialog.get_episodes());
 			cout << "DONE, TOTAL RESULT: " << result << endl;
 			this->approxAgent.reset_parameters();
@@ -133,6 +133,7 @@ void Reinforcement_LearningQLearning::on_startstopbutton_clicked()
 }
 
 void Reinforcement_LearningQLearning::set_random_episodes_to_show(int counter, int episodes) {
+	this->episodes_to_show.clear();
 	int value = 0;
 	for (int i = 0; i < counter; ++i) {
 		while (true) {

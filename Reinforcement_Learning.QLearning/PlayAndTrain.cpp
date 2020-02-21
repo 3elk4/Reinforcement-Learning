@@ -148,7 +148,8 @@ double Reinforcement_LearningQLearning::play_and_train_approxqlearning(const int
 	for (int i = 0; i < episodes; ++i) {
 		this->headAndFood = this->environment.reset();
 		show_episode(i, this->episodes_to_show);
-		while (true) {
+		int j = 0;
+		while (j++ < 100) {
 			auto is_done = do_step_approxqlearning(i);
 			if (is_done) break;
 		}
@@ -157,6 +158,7 @@ double Reinforcement_LearningQLearning::play_and_train_approxqlearning(const int
 	}
 	this->headAndFood = this->environment.reset();
 	//print_table(this->agent);
+	print_weight_table();
 	return total_reward;
 }
 
@@ -200,7 +202,7 @@ bool Reinforcement_LearningQLearning::do_step_approxqlearning(int current_episod
 	optional<action> a;
 	step_details<pair<Point, Point>> sd;
 
-	a = this->approxAgent.get_best_action(this->headAndFood);
+	a = this->approxAgent.get_action(this->headAndFood);
 	if (this->environment.is_wall(this->headAndFood) || this->environment.is_terminal(this->headAndFood)) return true;
 	sd = this->environment.step(a.value(), this->headAndFood);
 

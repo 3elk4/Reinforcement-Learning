@@ -4,7 +4,7 @@ map<feature_names, double> SimpleFeatureModel::get_feature_values(const pair<Poi
 {
 	map<feature_names, double> values;
 	for (auto &f : this->features) {
-		values[f.get_feature_name()] = f.get_feature_value(s, a);
+		values[f->get_feature_name()] = f->get_feature_value(s, a);
 	}
 	return values;
 }
