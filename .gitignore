@@ -267,3 +267,14 @@ __pycache__/
 /Reinforcement_Learning.Algorithms/Reinforcement_LearningAlgorithms.h
 /Reinforcement_Learning.Algorithms/Reinforcement_LearningAlgorithms.qrc
 /Reinforcement_Learning.Algorithms/Reinforcement_LearningAlgorithms.ui
+/NeuralNetwork/A_mat.txt
+/NeuralNetwork/B_mat.txt
+/NeuralNetwork/blas_win64_MT.dll
+/NeuralNetwork/blas_win64_MT.lib
+/NeuralNetwork/lapack_win64_MT.dll
+/NeuralNetwork/lapack_win64_MT.lib
+/NeuralNetwork/NeuralNetwork.vcxproj
+/NeuralNetwork/NeuralNetwork.vcxproj.filters
+/NeuralNetwork/README.txt
+/Reinforcement_Learning.QLearning/Reinforcement_Learning.QLearning.vcxproj
+/Reinforcement_Learning.QLearning/Reinforcement_Learning.QLearning.vcxproj.filters
