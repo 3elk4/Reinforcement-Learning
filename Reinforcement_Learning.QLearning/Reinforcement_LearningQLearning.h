@@ -19,6 +19,7 @@
 #include <string>
 #include "ParameterDialog.h"
 #include "AproxQLearning.h"
+#include "FeatureDialog.h"
 
 using namespace std;
 
@@ -94,6 +95,7 @@ private:
 
 	rl_mode mode;
 	ParameterDialog pardialog = ParameterDialog(this);
+	FeatureDialog featdialog = FeatureDialog(this);
 	list<int> episodes_to_show;
 	void set_random_episodes_to_show(int count, int episodes);
 	QFileDialog fd;

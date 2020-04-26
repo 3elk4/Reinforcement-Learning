@@ -56,8 +56,7 @@ public:
 		}
 	}
 
-	//TODO: feature extractor - zwraca wektor lub mapa(!!) 
-	double get_qvalue(const S&s, const A& a) { //extract features 
+	double get_qvalue(const S&s, const A& a) {
 		return this->qtable.at(s).at(a);
 	}
 	void set_qvalue(const S&s, const A&a, const double &value) {
@@ -74,7 +73,7 @@ public:
 		return actions;
 	}
 
-	double get_max_value(const S &s) { // z 4 get qvalue
+	double get_max_value(const S &s) {
 		return max_element(this->qtable.at(s).begin(), this->qtable.at(s).end(),
 			[](const pair<A, double>& p1, const pair<A, double>& p2) {return p1.second < p2.second; })->second;
 	}

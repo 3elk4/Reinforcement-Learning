@@ -85,8 +85,11 @@
     <ClCompile Include="AproxQLearning.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Feature.cpp" />
+    <ClCompile Include="FeatureDialog.cpp" />
     <ClCompile Include="FeatureModel.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="NeuralNetwork.cpp" />
     <ClCompile Include="ParameterDialog.cpp" />
     <ClCompile Include="PlayAndTrain.cpp" />
     <ClCompile Include="Point.cpp" />
@@ -99,6 +102,7 @@
     <QtMoc Include="Reinforcement_LearningQLearning.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="FeatureDialog.ui" />
     <QtUic Include="ParameterDialog.ui" />
     <QtUic Include="Reinforcement_LearningQLearning.ui" />
   </ItemGroup>
@@ -112,7 +116,10 @@
     <ClInclude Include="Environment.h" />
     <QtMoc Include="ParameterDialog.h" />
     <ClInclude Include="Feature.h" />
+    <QtMoc Include="FeatureDialog.h" />
     <ClInclude Include="FeatureModel.h" />
+    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="NeuralNetwork.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="QLearningAgent.h" />
     <ClInclude Include="SARSA.h" />
