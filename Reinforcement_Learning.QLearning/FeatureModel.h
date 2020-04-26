@@ -27,13 +27,13 @@ protected:
 
 class SimpleFeatureModel{
 public:
-	SimpleFeatureModel() { this->features = { new Food_Feature(), new Is_Wall_Feature() }; } /*, new Is_Food_Feature(), new Is_Wall_Feature()*/
+	SimpleFeatureModel() { this->features = { new Food_Feature(),
+												new Is_Wall_Feature(),
+												new Is_Food_Feature(),
+												new Min_Wall_Feature() }; } 
 	SimpleFeatureModel(const list<Feature*> &f) { this->features = f; }
-	~SimpleFeatureModel() {
-		/*for (auto &f : this->features) {
-			delete f;
-		}*/
-	}
+	~SimpleFeatureModel() { }
+	void set_environment_elements_to_features(vector<Point> &elements, const env_type &et);
 	map<feature_names, double> get_feature_values(const pair<Point, Point>&s, const action&a);
 
 	list<Feature*> get_features() {

@@ -38,6 +38,15 @@
     <ClCompile Include="FeatureModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FeatureDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NeuralNetwork.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -68,12 +77,18 @@
     <QtMoc Include="ParameterDialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="FeatureDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="Reinforcement_LearningQLearning.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="ParameterDialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="FeatureDialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
@@ -108,6 +123,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FeatureModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NeuralNetwork.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

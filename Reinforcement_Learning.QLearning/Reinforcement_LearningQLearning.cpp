@@ -10,19 +10,6 @@ Reinforcement_LearningQLearning::Reinforcement_LearningQLearning(QWidget *parent
 	this->pardialog.setModal(true);
 	ui.statusBar->showMessage(p_states.at(program_state::none));
 
-	//APROX QLEARNING
-/*	list<Feature*> features = { &Food_Feature(),
-							&Is_Food_Feature(),
-							&Is_Food_Up_Feature(),
-							&Is_Food_Down_Feature(),
-							&Is_Food_Left_Feature(),
-							&Is_Food_Right_Feature(),
-							&Min_Wall_Feature()
-							//One_Wall_Feature(feature_names::left_wall_feature),
-							//One_Wall_Feature(feature_names::right_wall_feature), 
-							//One_Wall_Feature(feature_names::up_wall_feature),
-							//One_Wall_Feature(feature_names::down_wall_feature)
-							};*/
 	auto model = SimpleFeatureModel();
 	list<action> actions = { action::up, action::down, action::left, action::right };
 	this->approxAgent = AproxQLearning(model, actions);

@@ -153,6 +153,10 @@ public:
 	~AproxQLearning() {
 	}
 
+	SimpleFeatureModel& get_feature_model() {
+		return this->feature_model;
+	}
+
 	void reset_parameters() {
 		this->alpha = 0.0;
 		this->gamma = 0.0;
@@ -162,7 +166,7 @@ public:
 	void set_parameters(double alpha, double gamma, double epsilon) {
 		this->alpha = alpha;
 		this->gamma = gamma;
-		//this->epsilon = epsilon;
+		this->epsilon = epsilon;
 	}
 
 	void set_possible_actions(const list<action> &actions) {
@@ -177,12 +181,7 @@ public:
 	void init_weight_table() {
 		for (auto &a : this->possible_actions) {
 			for (auto &f : this->feature_model.get_features()) {
-				if (f->get_feature_name() == feature_names::food_feature || f->get_feature_name() == feature_names::is_food_feature) {
-					this->weight_table[f->get_feature_name()] = 0.0;
-				}
-				else if (f->get_feature_name() == feature_names::min_wall_feature || f->get_feature_name() == feature_names::is_wall_feature) {
-					this->weight_table[f->get_feature_name()] = 0.0;
-				}
+				this->weight_table[f->get_feature_name()] = 0.0;
 			}
 		}
 	}
@@ -194,8 +193,8 @@ public:
 	double compute_new_qvalue(const pair<Point, Point>&s, const action&a) {
 		auto feature_values = this->feature_model.get_feature_values(s, a);
 		double value = 0.0;
-		for (auto &f : feature_values) {
-			value += this->weight_table.at(f.first) * f.second;
+		for (auto &w : this->weight_table) {
+			value += w.second * feature_values.at(w.first);
 		}
 		return value;
 	}
@@ -214,8 +213,8 @@ public:
 		auto feature_values = this->feature_model.get_feature_values(s1, a);
 		auto diffrence = (reward + this->gamma * get_max_qvalue(s2)) - compute_new_qvalue(s1, a);
 		map<feature_names, double> new_values;
-		for (auto &f : feature_values) {
-			new_values[f.first] = this->weight_table.at(f.first) + this->alpha * diffrence * f.second;
+		for (auto &w : this->weight_table) {
+			new_values[w.first] = w.second + this->alpha * diffrence * feature_values.at(w.first);
 		}
 		set_weight_table(new_values);
 	}

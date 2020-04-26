@@ -59,6 +59,10 @@ void Reinforcement_LearningQLearning::on_envbutton_clicked()
 	//SARSA
 	this->agentSARSA.init_qvalues(states, curr_actions);
 
+	//approx - wall features
+	vector<Point> walls = this->environment.get_environment_elements(env_type::wall);
+	this->approxAgent.get_feature_model().set_environment_elements_to_features(walls, env_type::wall);
+
 	repaint();
 	ui.statusBar->showMessage(p_states.at(program_state::none));
 }
@@ -78,7 +82,6 @@ void Reinforcement_LearningQLearning::on_startstopbutton_clicked()
 		ui.startstopbutton->setText("START");
 	}
 	else {
-		ui.statusBar->showMessage(p_states.at(program_state::none));
 		ui.qlearning->setEnabled(false);
 		ui.sarsa->setEnabled(false);
 		ui.aproxqlearning->setEnabled(false);
@@ -119,6 +122,12 @@ void Reinforcement_LearningQLearning::on_startstopbutton_clicked()
 		}
 		else if (mode == rl_mode::approx) {
 			this->approxAgent.set_parameters(pardialog.get_alpha(), pardialog.get_gamma(), pardialog.get_epsilon());
+			featdialog.exec();
+			auto wvalues = featdialog.get_feature_weight_values();
+
+			//cechy, które ma braæ wynikaj¹ z wybranych wartoœci
+			this->approxAgent.set_weight_table(wvalues);
+
 			double result = play_and_train_approxqlearning(pardialog.get_episodes());
 			cout << "DONE, TOTAL RESULT: " << result << endl;
 			this->approxAgent.reset_parameters();
