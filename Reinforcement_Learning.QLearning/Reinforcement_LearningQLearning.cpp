@@ -11,8 +11,7 @@ Reinforcement_LearningQLearning::Reinforcement_LearningQLearning(QWidget *parent
 	ui.statusBar->showMessage(p_states.at(program_state::none));
 
 	auto model = SimpleFeatureModel();
-	list<action> actions = { action::up, action::down, action::left, action::right };
-	this->approxAgent = AproxQLearning(model, actions);
+	this->approxAgent = AproxQLearning(model, this->listOfActions);
 	this->approxAgent.init_weight_table();
 	
 	timer = new QTimer(this);
@@ -23,7 +22,11 @@ Reinforcement_LearningQLearning::Reinforcement_LearningQLearning(QWidget *parent
 
 	timerapproxqlerning = new QTimer(this);
 	connect(timerapproxqlerning, SIGNAL(timeout()), this, SLOT(loopapproxqlearning()));
+
+	timerdeepqlearning = new QTimer(this);
+	connect(timerdeepqlearning, SIGNAL(timeout()), this, SLOT(loopdeepqlearning()));
 	//timer->start(250);
+
 }
 
 Reinforcement_LearningQLearning::~Reinforcement_LearningQLearning()
@@ -34,6 +37,10 @@ Reinforcement_LearningQLearning::~Reinforcement_LearningQLearning()
 		delete timerSARSA;
 	if (this->timerapproxqlerning != nullptr)
 		delete timerapproxqlerning;
+	if (this->timerdeepqlearning != nullptr)
+		delete timerdeepqlearning;
+	if (this->dqnAgent != nullptr)
+		delete dqnAgent;
 }
 
 void Reinforcement_LearningQLearning::init_environment(const string &path) {
@@ -153,8 +160,6 @@ void Reinforcement_LearningQLearning::paintEvent(QPaintEvent * event)
 }
 
 void Reinforcement_LearningQLearning::print_table(QLearningAgent<pair<Point, Point>, action> &agent) {
-
-	//TODO: odfiltrowaæ do obecnej planszy
 	map<pair<Point, Point>, map<action, double>> qtable = agent.get_qtable();
 	map<pair<Point, Point>, map<action, double>> filtred;
 	for (auto &kv : qtable) {
@@ -220,6 +225,18 @@ void Reinforcement_LearningQLearning::draw_best_actions(QLearningAgent<pair<Poin
 		}
 	}
 
+}
+
+void Reinforcement_LearningQLearning::show_deepqlearning_statistics(const int &episodes, vector<pair<int, bool>> &statistics)
+{
+	cout << "| Number of episodes: " << episodes << " |" << endl;
+	int all_steps = 0, all_find = 0;
+	for (auto &record : statistics) {
+		all_steps += record.first;
+		if (record.second) all_find += 1;
+	}
+	cout << "| Average number of steps: " << (double)all_steps / statistics.size() << " |" << endl;
+	cout << "| Percent number of found food: " << (double)all_find * 100.0 / statistics.size() << "% |" << endl;
 }
 
 

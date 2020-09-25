@@ -4,6 +4,7 @@
 #include <armadillo>
 #include <vector>
 #include <math.h>
+#include "Layer.h"
 
 using namespace std;
 
@@ -11,16 +12,16 @@ class NeuralNetworkBase
 {
 public:
 	NeuralNetworkBase();
-	NeuralNetworkBase(NeuralNetworkBase &base);
-	NeuralNetworkBase(vector<arma::mat>& weights, double alpha);
 	~NeuralNetworkBase();
+	NeuralNetworkBase(NeuralNetworkBase &base);
+	NeuralNetworkBase(vector<Layer>& layers, double alpha);
 
-	virtual arma::mat compute(arma::mat &input_array); // returns output
-	virtual void update(arma::mat &input_array, arma::mat &expected_output_array);
+	virtual arma::mat predict(const arma::mat &input_array);
+	virtual void fit(const arma::mat &input_array, arma::mat &expected_output_array);
+	virtual void computeError(const arma::mat &delta);
 
 protected:
-	vector<arma::mat> layers;
-	vector<arma::mat> weights;
+	vector<Layer> layers;
 	double error = 0.0;
 	double alpha = 0.01; // learning rate
 };

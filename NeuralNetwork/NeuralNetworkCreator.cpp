@@ -1,49 +1,31 @@
 #include "pch.h"
 #include "NeuralNetworkCreator.h"
 
-vector<int> NeuralNetworkCreator::get_neural_numbers()
+Layer NeuralNetworkCreator::createLayer(pair<int, int>& input_output_number, pair<double, double>& intervals, string &funcName)
 {
-	vector<int> neural_numbers;
-	int number = 0;
-	cout << "\nEnter number of input neurons: ";
-	cin >> number;
-	neural_numbers.push_back(number);
-
-	cout << "\nEnter number of hidden neurons: ";
-	cin >> number;
-	neural_numbers.push_back(number);
-
-	cout << "\nEnter number of output neurons: ";
-	cin >> number;
-	neural_numbers.push_back(number);
-	return neural_numbers;
+	auto weights = NeuralNetworkCreator::create_weights(input_output_number, intervals);
+	auto activFunc = NeuralNetworkCreator::create_activate_functions(funcName);
+	Layer layer(weights);
+	layer.set_activate_functions(activFunc);
+	return layer;
 }
 
-vector<arma::mat> NeuralNetworkCreator::create_weights(vector<int> &neural_numbers, vector<pair<double, double>> &intervals)
+arma::mat NeuralNetworkCreator::create_weights(pair<int, int>& input_output_number, pair<double, double>& intervals)
 {
-	vector<arma::mat> weights;
-	for (int i = 0; i < neural_numbers.size()-1; ++i) {
-		auto weight = arma::randi<arma::mat>(neural_numbers.at(i+1), neural_numbers.at(i), arma::distr_param(intervals[i].first, intervals[i].second)); 
-		weights.push_back(weight);
-	}
-
-	return weights;
+	arma::mat temp = arma::randu<arma::mat>(input_output_number.second, input_output_number.first);
+	//cout << temp << endl;
+	temp = temp * (intervals.second - intervals.first) + intervals.first;
+	//cout << temp << endl;
+	return temp;
 }
 
-vector<pair<activFunc, activFunc>> NeuralNetworkCreator::create_activate_functions(vector<int>& neural_numbers)
+pair<activFunc, activFunc> NeuralNetworkCreator::create_activate_functions(string funcName)
 {
-	vector<pair<activFunc, activFunc>> functions;
-	string name;
 	ActivFunction af;
-	for (int i = 1; i < neural_numbers.size(); ++i) {
-		cout << "\nEnter name of function activation (or 'none'): ";
-		cin >> name;	
-		if (name == "RELU") af = ActivFunction::RELU;
-		else if (name == "SIGMOID") af = ActivFunction::SIGMOID;
-		else if (name == "TANH") af = ActivFunction::TANH;
-		else if (name == "SOFTMAX") af = ActivFunction::SOFTMAX;
-		else af = ActivFunction::NONE;
-		functions.push_back(ActivateFunctions::get_funcs_by_type(af));
-	}
-	return functions;
+	if (funcName == "RELU") af = ActivFunction::RELU;
+	else if (funcName == "SIGMOID") af = ActivFunction::SIGMOID;
+	else if (funcName == "TANH") af = ActivFunction::TANH;
+	else if (funcName == "SOFTMAX") af = ActivFunction::SOFTMAX;
+	else af = ActivFunction::NONE;
+	return ActivateFunctions::get_funcs_by_type(af);
 }

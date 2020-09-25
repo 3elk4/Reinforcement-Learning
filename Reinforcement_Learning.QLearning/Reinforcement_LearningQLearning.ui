@@ -121,6 +121,22 @@
        <string>Aprox Q-Learning</string>
       </property>
      </widget>
+     <widget class="QRadioButton" name="deepqlearning">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>171</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Deep Q-Learning</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QPushButton" name="startstopbutton">
      <property name="geometry">

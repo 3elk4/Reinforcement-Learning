@@ -1,9 +1,6 @@
 #include "pch.h"
 #include "ActivateFunctions.h"
 
-
-
-
 pair<activFunc, activFunc> ActivateFunctions::get_funcs_by_type(ActivFunction &af)
 {
 	switch (af) {
@@ -24,46 +21,44 @@ pair<activFunc, activFunc> ActivateFunctions::get_funcs_by_type(ActivFunction &a
 
 arma::mat ActivateFunctions::ReLu(arma::mat &values)
 {
-	values.for_each([](auto& value) { value = value > 0 ? value : 0.0 });
+	values.for_each([](auto& value) { value = value > 0 ? value : 0.0; });
 	return values;
 }
 
 arma::mat ActivateFunctions::ReLu_deriv(arma::mat &values)
 {
-	values.for_each([](auto& value) { value = value > 0 ? 1.0 : 0.0 });
+	values.for_each([](auto& value) { value = value > 0 ? 1.0 : 0.0; });
 	return values;
 }
 
 arma::mat ActivateFunctions::Sigmoid(arma::mat &values)
 {
-	values.for_each([](auto& value) { value = 1.0 / (1.0 + exp(-value)) });
+	values.for_each([](auto& value) { value = 1.0 / (1.0 + exp(-value)); });
 	return values;
 }
 
 arma::mat ActivateFunctions::Sigmoid_deriv(arma::mat &values)
 {
-	values.for_each([](auto& value) { value = value * (1.0 - value) });
+	values.for_each([](auto& value) { value = value * (1.0 - value); });
 	return values;
 }
 
 arma::mat ActivateFunctions::Tanh(arma::mat &values)
 {
-	values.for_each([](auto& value) { value = tanh(value) });
+	values.for_each([](auto& value) { value = tanh(value); });
 	return values;
 }
 
 arma::mat ActivateFunctions::Tanh_deriv(arma::mat &values)
 {
-	values.for_each([](auto& value) { value = 1.0 - pow(value, 2) });
+	values.for_each([](auto& value) { value = 1.0 - pow(value, 2); });
 	return values;
 }
 
 arma::mat ActivateFunctions::Softmax(arma::mat & values)
 {
 	arma::mat temp = arma::exp(values);
-	for (auto row : temp.rows) {
-		row /= arma::sum(row);
-	}
+	temp.each_row([](arma::drowvec &row) { row /= arma::sum(row); });
 	return temp;
 }
 

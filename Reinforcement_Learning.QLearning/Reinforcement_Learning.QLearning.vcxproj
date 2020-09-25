@@ -38,6 +38,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Users\Belka\Desktop\RL 5i6 semestr\armadillo-9.860.2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Belka\Desktop\RL 5i6 semestr\armadillo-9.860.2\examples\lib_win64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\Users\Belka\Desktop\RL 5i6 semestr\armadillo-9.860.2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Belka\Desktop\RL 5i6 semestr\armadillo-9.860.2\examples\lib_win64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
@@ -60,11 +68,14 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\Belka\Desktop\RL 5i6 semestr\armadillo-9.860.2\include;$(SolutionDir)NeuralNetwork;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>blas_win64_MT.lib;lapack_win64_MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Belka\Desktop\RL 5i6 semestr\armadillo-9.860.2\examples\lib_win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -73,23 +84,25 @@
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <AdditionalIncludeDirectories>C:\Users\Belka\Desktop\RL 5i6 semestr\armadillo-9.860.2\include;$(SolutionDir)NeuralNetwork;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>blas_win64_MT.lib;lapack_win64_MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Belka\Desktop\RL 5i6 semestr\armadillo-9.860.2\examples\lib_win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AbstractMDP.cpp" />
     <ClCompile Include="AproxQLearning.cpp" />
+    <ClCompile Include="DQNAgent.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Feature.cpp" />
     <ClCompile Include="FeatureDialog.cpp" />
     <ClCompile Include="FeatureModel.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Matrix.cpp" />
-    <ClCompile Include="NeuralNetwork.cpp" />
     <ClCompile Include="ParameterDialog.cpp" />
     <ClCompile Include="PlayAndTrain.cpp" />
     <ClCompile Include="Point.cpp" />
@@ -113,16 +126,24 @@
     <ClInclude Include="AbstractMDP.h" />
     <ClInclude Include="AproxQLearning.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="DQNAgent.h" />
     <ClInclude Include="Environment.h" />
     <QtMoc Include="ParameterDialog.h" />
     <ClInclude Include="Feature.h" />
     <QtMoc Include="FeatureDialog.h" />
     <ClInclude Include="FeatureModel.h" />
-    <ClInclude Include="Matrix.h" />
-    <ClInclude Include="NeuralNetwork.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="QLearningAgent.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SARSA.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Reinforcement_Learning.QLearning.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NeuralNetwork\NeuralNetwork.vcxproj">
+      <Project>{aeebeff7-5480-4503-9147-a6f3199fc4e8}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

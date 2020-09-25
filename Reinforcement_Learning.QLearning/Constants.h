@@ -1,10 +1,10 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
 //#pragma once
+
 #include <iostream>
 
 using namespace std;
-
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
 
 	enum class action {
 		up = 0,
@@ -16,7 +16,8 @@ using namespace std;
 	enum class rl_mode {
 		qlearning = 0,
 		sarsa,
-		approx
+		approx,
+		deepqlearning
 	};
 
 	enum class env_type {
@@ -86,6 +87,7 @@ using namespace std;
 		qlearning,
 		sarsa,
 		approx,
+		deepqlearning,
 		init_env,
 		mode_choosing,
 		setting_parameters,

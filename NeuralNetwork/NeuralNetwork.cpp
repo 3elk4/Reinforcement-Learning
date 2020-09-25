@@ -21,15 +21,15 @@ int main(int argc, const char **argv) {
 	arma::mat weights = { 0.1, 0.2, -0.1 };
 	arma::mat expected = { 1.0 };
 
-	vector<arma::mat> neural_num;
-	neural_num.push_back(weights);
+	vector<Layer> layers;
+	layers.push_back(Layer(weights));
 	//neural_num.push_back(temp2);
 	//vector<int> neural_num = { 3, 3 };
 	
-	NeuralNetworkBase base(neural_num, 0.01);
-	auto output = base.compute(input);
+	NeuralNetworkBase base(layers, 0.01);
+	auto output = base.predict(input);
 	cout << "OUTPUT:\n" << output << endl;
-	base.update(input, expected);
+	base.fit(input, expected);
 	
 	return 0;
 	

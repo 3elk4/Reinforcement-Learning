@@ -162,6 +162,43 @@ double Reinforcement_LearningQLearning::play_and_train_approxqlearning(const int
 	return total_reward;
 }
 
+double Reinforcement_LearningQLearning::play_and_train_deepqlearning(const int & episodes)
+{
+	/*
+This function should
+- run a full game, actions given by agent's e-greedy policy
+- train agent using agent.update(...) whenever it is possible
+- return total reward
+*/
+
+	double total_reward = 0.0;
+	this->statistics.clear();
+	//optional<action> a;
+	//step_details<pair<Point, Point>> sd;
+
+	for (int i = 0; i < episodes; ++i) {
+		if (i == 9) {
+			cout << "RL" << endl;
+		}
+		this->headAndFood = this->environment.reset();
+		show_episode(i, this->episodes_to_show);
+		int j = 0;
+		this->steps = 0;
+		while (j++ < 100) {
+			auto is_done = do_step_deepqlearning(i);
+			if (is_done) break;
+		}
+		this->statistics.push_back(make_pair(this->steps, this->environment.is_terminal(this->headAndFood)));
+		this->dqnAgent->replay(100);
+		//cout << "EPISODE: " << i + 1 << ", SCORE: " << total_reward << endl;
+		
+	}
+	this->headAndFood = this->environment.reset();
+	//print_table(this->agent);
+	show_deepqlearning_statistics(episodes, this->statistics);
+	return total_reward;
+}
+
 bool Reinforcement_LearningQLearning::do_step_qlearning(int current_episode)
 {
 	optional<action> a;
@@ -210,6 +247,26 @@ bool Reinforcement_LearningQLearning::do_step_approxqlearning(int current_episod
 	this->approxAgent.update(this->headAndFood, a.value(), sd.reward, sd.next_state);
 	this->headAndFood = sd.next_state;
 	show_episode(current_episode, this->episodes_to_show);
+	return false;
+}
+
+bool Reinforcement_LearningQLearning::do_step_deepqlearning(int current_episode)
+{
+	optional<action> a;
+	step_details<pair<Point, Point>> sd;
+
+	this->environment.set_current_snapshot(this->headAndFood.first, this->headAndFood.second);
+	auto snap = this->environment.get_current_snapshot();
+	a = this->dqnAgent->get_action(snap);
+	if (this->environment.is_wall(this->headAndFood) || this->environment.is_terminal(this->headAndFood)) return true;
+	sd = this->environment.step(a.value(), this->headAndFood);
+	this->environment.set_current_snapshot(sd.next_state.first, this->headAndFood.second);
+
+	//train(update) agent for state s
+	this->dqnAgent->remember(snap, a.value(), sd.reward, this->environment.get_current_snapshot(), sd.is_done);
+	this->headAndFood = sd.next_state;
+	show_episode(current_episode, this->episodes_to_show);
+	this->steps++;
 	return false;
 }
 

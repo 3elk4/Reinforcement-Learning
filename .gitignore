@@ -278,3 +278,4 @@ __pycache__/
 /NeuralNetwork/README.txt
 /Reinforcement_Learning.QLearning/Reinforcement_Learning.QLearning.vcxproj
 /Reinforcement_Learning.QLearning/Reinforcement_Learning.QLearning.vcxproj.filters
+/Reinforcement_Learning.QLearning/resource.h

@@ -120,16 +120,18 @@ bool Environment::is_terminal(const pair<Point, Point>& p)
 	return p.first == p.second;
 }
 
-/*double Environment::get_reward(const pair<Point, Point>& p1, const action & a, const pair<Point, Point>& p2)
+double Environment::get_reward(const pair<Point, Point>& p1, const action & a, const pair<Point, Point>& p2)
 {
 	if (is_wall(p2)) {
 		return -1.0;
 	}
-	else if (is_terminal(p2)) {
+	if (is_terminal(p2)) {
 		return 1.0;
 	}
-	return 0.0;
-}*/
+	double old_distance = get_distance(p1) / (this->environment.size() * 100);
+	double new_distance = get_distance(p2) / (this->environment.size() * 100);
+	return old_distance - new_distance;
+}
 
 pair<Point, Point> Environment::reset()
 {
@@ -137,21 +139,22 @@ pair<Point, Point> Environment::reset()
 		current_state = initial_state;
 	}
 	else if (is_terminal(current_state)) {
-		change_reward_position();
-		initial_state = current_state;
+		//change_reward_position();
+		//initial_state = current_state;
+		current_state = initial_state;
 	}
 	return current_state;
 }
 
 void Environment::change_reward_position()
 {
-	auto empty_states = this->get_environment_elements(env_type::path);
+	/*auto empty_states = this->get_environment_elements(env_type::path);
 	auto del_it = std::find(empty_states.begin(), empty_states.end(), this->current_state.second);
 	if (del_it != empty_states.end()) empty_states.erase(del_it);
 	auto it = empty_states.begin();
 	advance(it, rand() % empty_states.size());
 	this->current_state.second = *it;
-	
+	*/
 }
 
 void Environment::clear_environment()
@@ -159,4 +162,65 @@ void Environment::clear_environment()
 	this->environment.clear();
 	this->transition_probs.clear();
 	this->rewards.clear();
+}
+
+void Environment::set_current_snapshot(Point & head, Point & food)
+{
+	this->features.clear();
+	//cout << this->environment.size() << endl;
+	//cout << get_distance(make_pair(head, food)) << endl;
+
+	double food_distance = get_distance(make_pair(head, food)) / (this->environment.size() * 100);
+	/*double is_head_wall = head == this->obstacle.first ? 1.0 : 0.0;
+	double is_head_food = head == food ? 1.0 : 0.0;*/
+	double up_wall = head.get_Y() / 50.0;
+	double right_wall = (60 - head.get_X()) / 50.0;
+	double down_wall = (60 - head.get_Y()) / 50.0;
+	double left_wall = head.get_X() / 50.0;
+
+	this->features.push_back(food_distance);
+	this->features.push_back(up_wall);
+	this->features.push_back(right_wall);
+	this->features.push_back(down_wall);
+	this->features.push_back(left_wall);
+	/*this->features.push_back(is_head_wall);
+	this->features.push_back(is_head_food);
+*/
+	/*if (this->current_snapshot.empty()) {
+		//this->current_snapshot[this->obstacle.first] = env_type::wall;
+
+		auto path_elements = this->get_environment_elements(env_type::path);
+
+		for_each(path_elements.begin(), path_elements.end(),
+			[this](const Point &p) { this->current_snapshot[p] = env_type::path; });
+	}
+	
+	for (auto & kv : this->current_snapshot) {
+ 		if (kv.second == env_type::head || kv.second == env_type::food) {
+			kv.second = env_type::path;
+		}
+	}
+	if (head != this->obstacle.first) {
+		this->current_snapshot[head] = env_type::head;
+	}
+	this->current_snapshot[food] = env_type::food;*/
+}
+
+arma::mat Environment::get_current_snapshot()
+{
+	/*vector<double> simplified;
+	const double part = 1.0 / 3.0;
+	for (const auto& kv : this->current_snapshot) {
+		simplified.push_back((int)kv.second * part);
+	}
+	return arma::mat(simplified).t();
+	*/
+	
+	return arma::mat(this->features).t();
+}
+
+double Environment::get_distance(const pair<Point, Point> &p)
+{
+	return sqrt(pow(const_cast<Point&>(p.second).get_X() - const_cast<Point&>(p.first).get_X(), 2) 
+		+ pow(const_cast<Point&>(p.second).get_Y() - const_cast<Point&>(p.first).get_Y(), 2));
 }

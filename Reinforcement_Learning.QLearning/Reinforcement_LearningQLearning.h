@@ -20,6 +20,11 @@
 #include "ParameterDialog.h"
 #include "AproxQLearning.h"
 #include "FeatureDialog.h"
+#include "DQNAgent.h"
+#include <armadillo>
+#include "NeuralNetworkBase.h"
+#include "NeuralNetworkCreator.h"
+#include "BackpropagationNeuralNetwork.h"
 
 using namespace std;
 
@@ -41,10 +46,12 @@ public:
 	double play_and_train_qlearning(const int &episodes);
 	double play_and_train_SARSA(const int &episodes);
 	double play_and_train_approxqlearning(const int &episodes);
+	double play_and_train_deepqlearning(const int &episodes);
 
 	bool do_step_qlearning(int current_episode);
 	bool do_step_SARSA(int current_episode);
 	bool do_step_approxqlearning(int current_episode);
+	bool do_step_deepqlearning(int current_episode);
 
 
 	void init_environment(const string &path);
@@ -53,23 +60,31 @@ public:
 	void show_episode(int current_episode, list<int> episodes);
 	void draw_best_actions(QLearningAgent<pair<Point, Point>, action> &agent, QPainter &painter);
 
+	void show_deepqlearning_statistics(const int &episodes, vector<pair<int, bool>> &statistics);
+
 private:
 	Ui::Reinforcement_LearningQLearningClass ui;
 	QTimer *timer = nullptr;
 	QTimer *timerSARSA = nullptr;
 	QTimer *timerapproxqlerning = nullptr;
+	QTimer *timerdeepqlearning = nullptr;
 	pair<Point, Point> headAndFood;
 
 	QLearningAgent<pair<Point, Point>, action> current_agent;
 
-
 	Environment environment;
-	
+	BackpropagationNeuralNetwork neural_network;
+
 	QLearningAgent<pair<Point, Point>, action> agent;
 	SARSA agentSARSA;
 	AproxQLearning approxAgent;
-
+	DQNAgent<arma::mat, action> *dqnAgent;
 	
+	vector<pair<int, bool>> statistics;
+	int steps = 0;
+
+	list<action> listOfActions = { action::up, action::down, action::left, action::right };
+
 	map<action, string> actions = { {action::up, "u"}, 
 									{action::down, "d" },
 									{action::left, "l" },
@@ -90,7 +105,8 @@ private:
 		{program_state::train_and_play, "Training agent..."},
 		{program_state::setting_parameters, "Set parameters for training agent."},
 		{program_state::episode, "Now training episode: "},
-		{program_state::approx, "Now Approximate Qlearning in motion."}
+		{program_state::approx, "Now Approximate Qlearning in motion."},
+		{program_state::deepqlearning, "Now Deep Q-Learning in motion."}
 	};
 
 	rl_mode mode;
@@ -99,16 +115,20 @@ private:
 	list<int> episodes_to_show;
 	void set_random_episodes_to_show(int count, int episodes);
 	QFileDialog fd;
+
+	void change_radiobuttons_status(bool status);
 private slots:
 	void loopqlearning();
 	void loopSARSA();
 	void loopapproxqlearning();
+	void loopdeepqlearning();
 
 	void on_envbutton_clicked();
 	void on_startstopbutton_clicked();
 	void on_qlearning_clicked();
 	void on_sarsa_clicked();
 	void on_aproxqlearning_clicked();
+	void on_deepqlearning_clicked();
 };
 
 #endif // QLEARNING_H
