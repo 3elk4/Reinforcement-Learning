@@ -2,7 +2,7 @@
 
 Project collaborates with another project named [W.U.N.S.Z.](https://github.com/3elk4/W.U.N.S.Z.).
 
-This time, instead of algorithms, snakes uses simple Reinforcement Learning technics:
+This time, instead of path algorithms, snake uses simple Reinforcement Learning techniques:
  - Markov Decission Process model
  - Q-Learning
  - SARSA
@@ -10,7 +10,7 @@ This time, instead of algorithms, snakes uses simple Reinforcement Learning tech
 
 ![qlearningmaze](https://github.com/3elk4/Reinforcement-Learning/assets/33397049/146d30a9-397c-4cc1-b786-1f6976a45eb8)
 
-Algorithms can be used in any type of maze, but it's not reccomended to build very big environments. These types of technics are mostly based on Q-table and large mazes can cause problems with efficiency and memory.
+Algorithms can be used in any type of maze, but it's not reccomended to build very big environments. These types of techniques are mostly based on Q-table and large mazes can cause problems with efficiency and memory.
 
 Some of gifs shows not only how snake is moving but alse Q-table of given environment.
 
@@ -38,6 +38,6 @@ It is also possible to learn model on given environment with specific parameters
 |-----------------|----------------|
 |![qlearninglearning](https://github.com/3elk4/Reinforcement-Learning/assets/33397049/587aa15f-ccc9-41a9-8a20-5fbd65102869) | ![qlearninglearning2](https://github.com/3elk4/Reinforcement-Learning/assets/33397049/e4dfb6af-86dc-49f5-aa3c-540d5cfec0b2) |
 
-It is possible to switch between technics and see the results of learning:
+It is possible to switch between techniques and see the results of learning:
 
 ![srarsaqlearning](https://github.com/3elk4/Reinforcement-Learning/assets/33397049/94b786b3-a9a7-4905-b866-ec8d11219134)
